@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic File Upload</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Arial', sans-serif;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        #uploadForm {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ff6b6b;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+
+        label:hover {
+            background-color: #ff8f8f;
+        }
+
+        button {
+            background-color: #1abc9c;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #16a085;
+        }
+
+        #generatedImage {
+            margin-top: 20px;
+            border: 2px solid #16a085;
+            border-radius: 8px;
+            width: 300px;
+            height: auto;
+        }
+
+        /* Loading animation */
+        #loading {
+            display: none;
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-top: 6px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h2>Generate Music Cover</h2>
+    <form id="uploadForm">
+        <label for="fileInput">Choose an .mp3</label>
+        <input type="file" id="fileInput" name="file" accept=".mp3" />
+        <button type="submit">Upload</button>
+    </form>
+
+    <h2>Generated Image</h2>
+    <img id="generatedImage" alt="Generated image will appear here" />
+
+    <div id="loading"></div> <!-- Loading animation -->
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var formData = new FormData();
+            var fileInput = document.getElementById('fileInput');
+
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+
+                // Show the loading spinner
+                document.getElementById('loading').style.display = 'block';
+
+                fetch('http://127.0.0.1:5000/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    // Hide the loading spinner
+                    document.getElementById('loading').style.display = 'none';
+                    // Set the base64 image to the img tag
+                    if (data.image) {
+                        document.getElementById('generatedImage').src = 'data:image/png;base64,' + data.image;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error uploading file:', error);
+                    // Hide the loading spinner
+                    document.getElementById('loading').style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
