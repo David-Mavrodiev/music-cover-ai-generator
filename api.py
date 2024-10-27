@@ -7,7 +7,7 @@ import base64
 import requests
 from openai import OpenAI
 
-client = OpenAI(api_key="your_key")
+client = OpenAI(api_key="api_key")
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
