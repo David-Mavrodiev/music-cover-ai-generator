@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import os
 from flask_cors import CORS
 import whisper
@@ -7,7 +7,7 @@ import base64
 import requests
 from openai import OpenAI
 
-client = OpenAI(api_key="your-key")
+client = OpenAI(api_key="your_key")
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -37,7 +37,7 @@ def censor_lyrics(lyrics):
             {"role": "system", "content": "You are a helpful assistant."},
             {
                 "role": "user",
-                "content": f"Please censor any explicit or inappropriate language in the following lyrics so that they can be used in a school setting. Output the corrected lyrics. '{lyrics}'"
+                "content": f"Please censor any explicit or inappropriate language in the following lyrics, and then condense the lyrics to their most essential parts that can best represent the mood and theme for generating a music cover (max 25 tokens). Focus on keeping parts that are most relevant for a visual interpretation using DALL·E-3. Return as an output only the extracted lyrics! Here are the lyrics: '{lyrics}'"
             }
         ]
     )
@@ -83,7 +83,7 @@ def upload_file():
         image_url = response.data[0].url
 
         # Download the image and convert it to base64
-        image_data = requests.get(image_url,timeout=10)
+        image_data = requests.get(image_url,timeout=30)
         img_str = base64.b64encode(image_data.content).decode("utf-8")
 
         return jsonify({
@@ -92,6 +92,11 @@ def upload_file():
         }), 200
     else:
         return jsonify({"error": "File type not allowed. Please upload an mp3 file."}), 400
+
+# Route to serve index.html
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Music Cover Generator</title>
+    <link rel="stylesheet" href="./lib/reset.css">
+    <link rel="stylesheet" href="./lib/reveal.css">
+    <link rel="stylesheet" href="./lib/theme/black.css">
+
+    <style>
+        html, body {
+            font-size: 16px;
+        }
+
+        h1 {
+            font-size: 2em !important;
+        }
+
+        h2 {
+            font-size: 1.5em !important;
+        }
+
+        p, ul {
+            text-align: left;
+            font-size: 1em !important;
+        }
+
+        .center {
+            text-align: center !important;
+        }
+
+        .code {
+            font-weight: 700;
+            background-color: black;
+            color: greenyellow;
+            font-family: 'Fira Code', monospace !important;
+        }
+
+        .file {
+            color: greenyellow;
+            font-family: 'Fira Code', monospace !important;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .image-container>img {
+            border: 10px solid snow;
+        }
+
+        #net {
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body id="net">
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Title Slide -->
+            <section>
+                <h1>AI Music Cover Generator</h1>
+                <h2 class="italic">From Audio to Visual: Creating AI-Generated Music Covers</h2>
+                <p style="font-size: 1.5rem !important; text-align: center;">Authors: David Mavrodiev, Ziya Ruso, Sanan Qarayev and Amlan Sahoo</p>
+            </section>
+
+            <!-- Pipeline Overview -->
+            <section>
+                <h2>Pipeline Overview</h2>
+                <img src="./images/steps.svg" alt="Pipeline Overview">
+            </section>
+
+            <!-- Upload Audio -->
+            <section>
+                <h2>Step 1: Upload Audio File</h2>
+                <p>The process begins with the user uploading an MP3 audio file. This file contains the song's lyrics that will later be used to generate the cover image.</p>
+            </section>
+
+            <!-- Lyrics Extraction -->
+            <section>
+                <h2>Step 2: Extracting Lyrics</h2>
+                <p><strong>Whisper AI</strong> transcribes the audio into text. The transcription includes all the lyrics, which are then passed on for further processing.</p>
+            </section>
+
+            <!-- Censor and Extract Key Parts -->
+            <section>
+                <h2>Step 3: Censor & Extract Key Elements</h2>
+                <p>Using <strong>GPT-4</strong>, we censor inappropriate language and extract the most important parts of the lyrics. This helps us focus on key themes for generating a relevant image.</p>
+            </section>
+
+            <!-- Sentiment Analysis -->
+            <section>
+                <h2>Step 4: Sentiment Analysis</h2>
+                <p>We perform <strong>Sentiment Analysis</strong> on the extracted lyrics to understand the mood and tone of the song. This analysis helps guide the visual style of the cover image.</p>
+            </section>
+
+            <!-- AI Cover Generation -->
+            <section>
+                <h2>Step 5: AI Image Generation</h2>
+                <p>Using <strong>DALL·E-3</strong>, we generate a music cover image based on the sentiment and key parts of the lyrics. The result is an AI-created visual representation of the music.</p>
+            </section>
+
+            <section>
+                <div class="image-container">
+                    <h3>AI-generated cover for "100 Shots" by Young Dolph</h3>
+                    <img src="./images/example.png" height="400px" alt="AI-Generated Cover Image">
+                </div>
+            </section>
+
+            <!-- Technical Overview -->
+            <section>
+                <h2>Technical Overview</h2>
+                <ul>
+                    <li><strong>Whisper AI</strong> for lyrics transcription.</li>
+                    <li><strong>GPT-4</strong> for censoring and extracting key lyrics.</li>
+                    <li><strong>Sentiment Analysis</strong> to understand the mood of the song.</li>
+                    <li><strong>DALL·E-3</strong> for generating the final music cover image.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2><a href="http://127.0.0.1:5000/" target="_blank">Live Demo</a></h2>
+            </section>
+
+            <!-- Conclusion -->
+            <section>
+                <h2>Conclusion</h2>
+                <p>This pipeline allows for the seamless transformation of audio into AI-generated visual art, tailored to the content and sentiment of the music.</p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="./lib/reveal.js"></script>
+    <script src="./lib/plugins/multiplex/client.js"></script>
+    <script src="./lib/plugins/multiplex/master.js"></script>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+    <script src="./lib/animations/three.min.js"></script>
+    <script src="./lib/animations/vanta.min.js"></script>
+    <script>
+        Reveal.initialize({
+            responsive: true,
+            hash: true,
+        });
+
+        VANTA.NET({
+            el: "#net",
+            color: 0x1f2a85,
+            backgroundColor: 0x000000,
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            points: 20.00,
+            maxDistance: 40.00,
+            spacing: 15.00
+        });
+    </script>
+</body>
+
+</html>

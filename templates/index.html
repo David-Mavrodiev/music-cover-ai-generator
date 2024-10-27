@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Futuristic File Upload</title>
+    <title>AI Music Cover Generator</title>
     <style>
         body {
             background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -72,6 +72,24 @@
             border-radius: 8px;
             width: 300px;
             height: auto;
+            display: none; /* Hide by default */
+        }
+
+        #downloadLink {
+            display: none; /* Hide by default */
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #downloadLink:hover {
+            background-color: #2980b9;
         }
 
         /* Loading animation */
@@ -93,24 +111,37 @@
     </style>
 </head>
 <body>
-    <h2>Generate Music Cover</h2>
+    <h2>AI Music Cover Generator</h2>
     <form id="uploadForm">
-        <label for="fileInput">Choose an .mp3</label>
+        <label for="fileInput" id="fileLabel">Choose an .mp3</label>
         <input type="file" id="fileInput" name="file" accept=".mp3" />
         <button type="submit">Upload</button>
     </form>
 
-    <h2>Generated Image</h2>
     <img id="generatedImage" alt="Generated image will appear here" />
+    <a id="downloadLink">Download Image</a>
 
     <div id="loading"></div> <!-- Loading animation -->
 
     <script>
+        const fileInput = document.getElementById('fileInput');
+        const fileLabel = document.getElementById('fileLabel');
+        const generatedImage = document.getElementById('generatedImage');
+        const downloadLink = document.getElementById('downloadLink');
+
+        // Update label with the file name when a file is selected
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files.length > 0) {
+                fileLabel.textContent = fileInput.files[0].name;
+            } else {
+                fileLabel.textContent = 'Choose an .mp3';
+            }
+        });
+
         document.getElementById('uploadForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
             var formData = new FormData();
-            var fileInput = document.getElementById('fileInput');
 
             if (fileInput.files.length > 0) {
                 formData.append('file', fileInput.files[0]);
@@ -118,7 +149,11 @@
                 // Show the loading spinner
                 document.getElementById('loading').style.display = 'block';
 
-                fetch('http://127.0.0.1:5000/upload', {
+                // Hide the image and download link initially
+                generatedImage.style.display = 'none';
+                downloadLink.style.display = 'none';
+
+                fetch('/upload', {
                     method: 'POST',
                     body: formData
                 })
@@ -129,7 +164,14 @@
                     document.getElementById('loading').style.display = 'none';
                     // Set the base64 image to the img tag
                     if (data.image) {
-                        document.getElementById('generatedImage').src = 'data:image/png;base64,' + data.image;
+                        const imageUrl = 'data:image/png;base64,' + data.image;
+                        generatedImage.src = imageUrl;
+                        // Show the image after generation
+                        generatedImage.style.display = 'block';
+                        // Set up the download link
+                        downloadLink.style.display = 'inline-block';
+                        downloadLink.setAttribute('href', imageUrl);
+                        downloadLink.setAttribute('download', 'generated_image.png');
                     }
                 })
                 .catch((error) => {
